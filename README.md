@@ -1,4 +1,4 @@
-# PNGtoHEX
+# ch2hp - Binary Asset to C++ Header Converter
 This Python script automatically converts all .png files within a directory into a single C++ header file (.hpp).
 
 It is a lightweight tool designed for embedding icons, images, or assets directly into your application's binary—perfect for embedded systems (Arduino, ESP32, STM32) or C++ applications that need to run without an external file system.
