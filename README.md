@@ -1,22 +1,52 @@
-# ch2hp - Binary Asset to C++ Header Converter
-This Python script automatically converts all .png files within a directory into a single C++ header file (.hpp).
+# PNGtoHEX (ch2hp)
 
-It is a lightweight tool designed for embedding icons, images, or assets directly into your application's binary—perfect for embedded systems (Arduino, ESP32, STM32) or C++ applications that need to run without an external file system.
+Converts image and font files into embeddable C++ header files (`.hpp`).
 
-# How to use
-Place the convert.py script in the folder containing your images (or modify the path in the script).
+Each asset is written as a `const unsigned char` array and a matching `_len` constant, ready to include directly in any C++ project — no file system required at runtime.
 
-Run the script: python convert.py
+## Supported formats
 
-A file named icons_bin.hpp will be generated in the same directory.
+Images: PNG, JPG, JPEG, BMP, ICO, GIF  
+Fonts: TTF, OTF, WOFF, WOFF2
 
-# Output example
-```c++
-// File: logo.png - 1240 bytes
-const unsigned char logo[] = {
-    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
-    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x20,
-    // ... rest of the hex data
-};
-const unsigned int logo_len = 1240;
+## Requirements
+
+Python 3. No third-party dependencies.
+
+## Usage
+
 ```
+python convert.py [file1 file2 ...]
+python convert.py --help
+```
+
+If no files are passed as arguments, the script prompts for drag-and-drop input (Windows CMD compatible, handles quoted paths with spaces).
+
+## Output modes
+
+The script asks interactively:
+
+**1. Merged** — all assets combined into a single file (default: `assets_bin.hpp`)  
+**2. Split** — one `.hpp` per asset, named after the generated C++ variable
+
+## Generated output
+
+```cpp
+// icon.png (1,240 bytes)
+const unsigned char icon[] = {
+    0x89, 0x50, 0x4e, 0x47, ...
+};
+const unsigned int icon_len = 1240;
+```
+
+Variable names are derived from filenames. Font files preserve family name and variant (e.g. `Roboto-BoldItalic.ttf` → `Roboto_BoldItalic`). Each generated file includes a proper `#ifndef` include guard.
+
+## Smart diffing
+
+The script caches an MD5 hash of every processed file in `.convert_cache.json`. On subsequent runs, unchanged files are skipped (or reused from cache in merged mode), so only modified or new assets are re-converted.
+
+## Notes
+
+- The CLI is in French.
+- To target a specific directory rather than dropping files, pass paths as arguments.
+- The cache file is written next to `convert.py` and can be deleted to force a full rebuild.
