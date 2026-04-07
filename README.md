@@ -1,4 +1,4 @@
-# PNGtoHEX (ch2hp)
+# crampp
 
 Converts image and font files into embeddable C++ header files (`.hpp`).
 
